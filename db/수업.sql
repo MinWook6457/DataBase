@@ -90,8 +90,94 @@ where 2>=(select count(distinct publisher)
 from customer, orders, book
 where customer.custid = orders.custid and orders.bookid = book.bookid and (name like cc.name));
 */
-
+/*
 insert into book(bookid,bookname,publisher,price) values (18,'스포츠 세계','대한미디어',10000);
 select * from book;
 delete from book where publisher like '삼성당';
 select * from book;
+*/
+
+-- 모든 도서의 이름과 가격을 검색하시오 --
+select bookname, price from book;
+
+-- 모든 도서의 도서번호, 도서이름, 출판사, 가격을 검색하시오 --
+select bookid,bookname,publisher,price from book;
+
+-- 도서 테이블에 있는 모든 출판사 (중복없이)를 검색하시오 --
+ select publisher from book;
+ select distinct publisher from book;
+
+-- 가격이 20000원 미만인 도서를 검색하시오 --
+select * from book where price < 20000;
+
+-- 가격이 10000원 이상 20000원 이하인 도서를 검색하시오 --
+select * from book where price between 10000 and 20000;
+
+-- 출판사가 굿스포츠 혹은 대한미디어 인 도서를 검색하시오 --
+select * from book where publisher in('굿스포츠','대한미디어');
+
+-- 축구의역사를 출간한 출판사를 검색하시오 --
+select bookname,publisher from book where bookname like '축구의 역사';
+
+-- 도서 이름에 '축구'가 포함된 출판사를 검색하시오 --
+select bookname,publisher from book where bookname like '%축구%';
+
+-- 도서 이름의 왼쪽에 두 번째 위치에 '구'라는 문자열을 갖는 도서를 검색하시오 --
+select * from book where bookname like '_구%'; 
+
+-- 축구에 관한 도서 중 가격이 20000원 이상인 도서를 검색하시오 --
+select * from book where price >= 20000 and bookname like '%축구%';
+
+-- 출판사가 굿스포츠 혹은 대한미디어인 도서를 검색하시오 --
+select * from book where publisher like '굿스포츠' or publisher like '대한미디어';
+
+-- 도서를 이름순으로 검색하시오 --
+select * from book order by bookname;
+
+-- 도서를 가격순으로 검색하고 가격이 같으면 이름순으로 검색하시오 --
+select * from book order by price,bookname;
+
+-- 도서를 가격의 내림차순으로 검색하시오. 만약 가격이 같다면 출판사의 오름차순으로 출력하시오 --
+select * from book order by price desc , bookname desc;
+
+-- 고객이 주문한 도서의 총 판매액을 구하시오 --
+select sum(saleprice) "총 매출" from orders;
+
+-- 2번 김연아 고색이 주문한 도서의 총 판매액을 구하시오 --
+select sum(saleprice) "2번 고객의 판매액" from orders where custid = 2;
+
+-- 고객이 주문한 도서의 총 판매액, 평균값, 최저가, 최고가를 구하시오 --
+select sum(saleprice) "총 매출", avg(saleprice) "평균값" , min(saleprice) "최저가" , max(saleprice) "최고가" from orders;
+
+-- 마당 서점의 도서 판매 건수를 검색하시오 --
+select count(*) from book;
+
+-- 고객별로 주문한 도서의 총 수량과 총 판매액을 구하시오 --
+select custid, count(*) "도서 수량" , sum(saleprice) "총 판매액" from orders group by custid;
+
+-- 가격 8000원 이상 도서를 구매한 고객에 대한 고객별 주문 도서의 총 수량을 구하라. 단 두 권이상 구매한 고객에 한함 --
+select custid, count(*) "도서 수량" from orders where saleprice >= 8000 group by custid having count(*) >= 2 order by custid;
+
+-- 고객과 고객의 주문에 관한 데이터를 모두 보이시오. (두 개의 테이블 합치기) --
+select * from customer c , orders o where c.custid = o.custid order by c.custid;
+
+-- 고객의 이름과 고객이 주문한 도서의 판매가격을 검색하시오 --
+select name "이름",saleprice"판매가격" from customer c,orders o where c.custid = o.custid;
+
+-- 고객별로 주문한 모든 도서의 총 판매액을 구하고, 고객별로 정렬하시오 --
+select name, sum(saleprice) from customer c ,orders o where c.custid = o.custid group by c.name order by c.name;
+
+-- 고객의 이름과 고객이 주문한 도서의 이름을 구하시오 --
+select customer.name, book.bookname from customer, orders, book where customer.custid=orders.custid AND orders.bookid = book.bookid;
+select c.name, b.bookname from customer c,orders o , book b where c.custid = o.custid and o.bookid = b.bookid;
+
+-- 가격이 20000원인 도서를 주문한 고객의 이름과 도서 이름을 구하시오 --
+select c.name , b.bookname from customer c, orders o, book b where c.custid = o.custid and b.price = 20000 and o.bookid = b.bookid;
+
+-- 도서를 구매하지 않은 고객을 포함하여 고객의 이름과 고객이 주문한 도서의 판매가격을 구하시오 -- 
+select c.name , saleprice from customer c left outer join orders o on c.custid=o.custid;
+
+
+
+
+
