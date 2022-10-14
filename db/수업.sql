@@ -409,3 +409,11 @@ select price+100 from mybook where bookid=3;
 select sum(price), avg(price), count(*), count(price) from mybook;
 
 select sum(price), avg(price), count(*) from mybook where bookid >= 4;
+
+select distinct name 
+from customer , orders , book where book.bookid = orders.bookid and customer.custid = orders.custid and customer.name not like '박지성' and
+publisher in (select publisher from customer , book , orders where name like '박지성' 
+and customer.custid = orders.custid and book.bookid = orders.bookid);
+
+
+
